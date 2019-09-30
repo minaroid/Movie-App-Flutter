@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' show get;
+import 'package:movie_app/src/ListDemo2.dart';
+
+import 'ListDemo3.dart';
 
 class BottomNavDemo extends StatefulWidget {
   @override
@@ -52,19 +55,20 @@ class HostState extends State<BottomNavDemo> {
               ),
               IconButton(
                 icon: Container(),
-                onPressed: (){
+                onPressed: () {
                   setState(() {
                     currentScreen = 2;
                   });
-                }
-                ,
+                },
               ),
               IconButton(
                 icon: Icon(Icons.shopping_cart),
                 onPressed: () {
+
                   setState(() {
                     currentScreen = 3;
                   });
+
                 },
               ),
               IconButton(
@@ -78,10 +82,17 @@ class HostState extends State<BottomNavDemo> {
             ],
           ),
         ),
-        body: Text(currentScreen.toString()),
+        body: getCurrentScreen(),
       ),
     );
   }
+
+  Widget getCurrentScreen() {
+    if (currentScreen == 1)
+      return ListDemo2();
+    else if(currentScreen == 2)
+      return ListDemo2();
+    else
+      return ListDemo3();
+  }
 }
-
-

@@ -125,7 +125,6 @@ class HomeState extends State<ListDemo> {
         )
             : ListView.builder(
           itemBuilder: (context, index) {
-            if (index == movies.length - 1) fetchMovies();
             return movieItemTwo(movies[index]);
           },
           itemCount: movies.length,
