@@ -1,28 +1,70 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
 
-class ListDemo3 extends StatefulWidget {
+class InstaDemo3 extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return MyScreen();
+    return HomeState();
   }
 }
 
-class MyScreen extends State<ListDemo3> {
-  var itmes = [1, 2, 3, 4, 5, 5, 6, 678, 88, 8];
+class HomeState extends State<InstaDemo3> {
+  var stories = [
+    Story("imageurl", "Ahmed"),
+    Story("imageurl", "Ahmed2"),
+    Story("imageurl", "Ahmed2"),
+    Story("imageurl", "Ahmed2"),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-          itemCount: itmes.length,
-          itemBuilder: (context, index) {
-            return myItem(index);
-          }),
-    );
+        body: Container(
+          width: 100,
+          height: 100,
+          padding: EdgeInsets.all(5),
+          child: Column(
+            children: <Widget>[
+              ListView.builder(
+                  itemCount: stories.length,
+
+                  scrollDirection: Axis.horizontal,
+
+                  itemBuilder: (context, index) {
+                    return storyItem(stories[index]);
+                  }),
+            ],
+          ),
+        ));
   }
 
-  Widget myItem(int index) {
+  Widget storyItem(Story story) {
+    return Padding(
+        padding: EdgeInsets.all(5),
+        child: Column(
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(5),
+                  child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: new DecorationImage(
+                              fit: BoxFit.fill,
+                              image: new NetworkImage(
+                                  "https://www.woolha.com/media/2019/06/buneary.jpg")))),
+                )
+              ],
+            ),
+          ],
+        ));
+  }
+
+  Widget myItem(index) {
     return Padding(
       padding: EdgeInsets.all(5),
       child: Column(
@@ -46,7 +88,7 @@ class MyScreen extends State<ListDemo3> {
                     Padding(
                       padding: EdgeInsets.only(left: 8),
                       child: Text(
-                        "minageorge",
+                        "muhammed99_u",
                         style: TextStyle(color: Colors.blue, fontSize: 16),
                       ),
                     )
@@ -56,7 +98,9 @@ class MyScreen extends State<ListDemo3> {
               ],
             ),
           ),
-          Image.network("https://video.cgtn.com/news/3167544e32636a4e31637a4d7a6b544f314d6a4e31457a6333566d54/video/14dfaac655aa4c4e8b1dbfdbd8c92c49/14dfaac655aa4c4e8b1dbfdbd8c92c49.png",fit: BoxFit.fill),
+          Image.network(
+              "https://video.cgtn.com/news/3167544e32636a4e31637a4d7a6b544f314d6a4e31457a6333566d54/video/14dfaac655aa4c4e8b1dbfdbd8c92c49/14dfaac655aa4c4e8b1dbfdbd8c92c49.png",
+              fit: BoxFit.fill),
           Padding(
             padding: EdgeInsets.all(5),
             child: Row(
@@ -66,26 +110,39 @@ class MyScreen extends State<ListDemo3> {
                   children: <Widget>[
                     Padding(
                       padding: EdgeInsets.all(5),
-                      child: Icon(Icons.favorite_border),),
+                      child: Icon(Icons.favorite_border),
+                    ),
                     Padding(
                       padding: EdgeInsets.all(5),
-                      child: Icon(Icons.folder_shared),),
+                      child: Icon(Icons.folder_shared),
+                    ),
                     Padding(
                       padding: EdgeInsets.all(5),
-                      child: Icon(Icons.ac_unit),)
-
+                      child: Icon(Icons.ac_unit),
+                    ),
                   ],
                 ),
                 Icon(Icons.add_alarm)
               ],
             ),
           ),
-          Row(children: <Widget>[
-            Padding(padding: EdgeInsets.all(5),
-              child: Text("$index  Likes",textAlign: TextAlign.left),)
-          ],)
+          Row(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(5),
+                child: Text("$index Like", textAlign: TextAlign.left),
+              )
+            ],
+          )
         ],
       ),
     );
   }
+}
+
+class Story {
+  String imageUrl;
+  String name;
+
+  Story(this.imageUrl, this.name);
 }

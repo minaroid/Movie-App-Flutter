@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' show get;
-import 'package:movie_app/src/store/models/MovieModel.dart';
+import 'package:movie_app/movies/MovieModel.dart';
 
 class InstaDemo extends StatefulWidget {
   @override
@@ -58,7 +58,7 @@ class HomeState extends State<InstaDemo> {
           ),
 
           Image.asset(
-            "assets/images/myImage.jpeg",
+            "ffff/images/myImage.jpeg",
             fit: BoxFit.fill,
             height: 220,
             width: double.infinity,
