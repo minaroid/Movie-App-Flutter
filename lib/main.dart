@@ -24,7 +24,7 @@ class MoviesState extends State<App> {
 
   Future fetchPopularMovies() async {
     var response = await get(
-        "https://api.themoviedb.org/3/movie/popular?api_key=c23c8f8855a040042f0433b7696f9d65&page=$counter");
+        "https://api.themoviedb.org/3/movie/popular?api_key=c23c8f8855a040042f0433b7696f9d65&page=$counter&language=ar");
     setState(() {
       movies
           .addAll(MoviesResponse.fromJson(json.decode(response.body)).results);
@@ -35,12 +35,13 @@ class MoviesState extends State<App> {
 
   Future fetchTopRatedMovies() async {
     var response = await get(
-        "https://api.themoviedb.org/3/movie/top_rated?api_key=c23c8f8855a040042f0433b7696f9d65&page=$counter");
+        "https://api.themoviedb.org/3/movie/top_rated?api_key=c23c8f8855a040042f0433b7696f9d65&page=$counter&language=ar");
     setState(() {
-      movies
-          .addAll(MoviesResponse.fromJson(json.decode(response.body)).results);
+      print(response.body.toString());
+      movies.addAll(MoviesResponse.fromJson(json.decode(response.body)).results);
       counter += 1;
     });
+
     print(movies);
   }
 
@@ -96,6 +97,16 @@ class MoviesState extends State<App> {
         body: ListView.builder(
             itemCount: movies.length,
             itemBuilder: (context, index) {
+
+              if (index == movies.length - 1) {
+               // end
+                if (_selectedIndex == 0)
+                  fetchTopRatedMovies();
+                else
+                  fetchPopularMovies();
+
+              }
+
               return movieItem(movies[index]);
             }),
       ),
@@ -133,7 +144,9 @@ class MoviesState extends State<App> {
                   ],
                 ),
               ),
-              Padding(padding: EdgeInsets.only(left: 8),),
+              Padding(
+                padding: EdgeInsets.only(left: 8),
+              ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,7 +155,9 @@ class MoviesState extends State<App> {
                       model.title,
                       style: TextStyle(fontSize: 14, fontFamily: "Arvooooo"),
                     ),
-                    Padding(padding: EdgeInsets.only(top: 2),),
+                    Padding(
+                      padding: EdgeInsets.only(top: 2),
+                    ),
                     Text(
                       model.overview,
                       maxLines: 3,
@@ -153,11 +168,10 @@ class MoviesState extends State<App> {
               )
             ],
           ),
-
           Container(
             color: Colors.grey,
             height: 1,
-            margin: EdgeInsets.only(top: 20,left: 15,right: 15),
+            margin: EdgeInsets.only(top: 20, left: 15, right: 15),
             width: double.infinity,
           )
         ],
