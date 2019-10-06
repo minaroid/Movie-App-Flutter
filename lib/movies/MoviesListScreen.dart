@@ -4,23 +4,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
+import 'MovieCell.dart';
 import 'MovieModel.dart';
 
-class MovieApp extends StatefulWidget {
+class MoviesListScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return BottomNavScreen();
+    return MoviesState();
   }
 }
 
-class BottomNavScreen extends State<MovieApp> {
+class MoviesState extends State<MoviesListScreen> {
   int _selectedIndex = 0;
   int counter = 1;
   List<MovieModel> movies = List();
   bool isGrid = false;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    fetchTopRatedMovies();
+  }
+
+  @override
+  Widget build(BuildContext contextt) {
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
@@ -41,12 +48,27 @@ class BottomNavScreen extends State<MovieApp> {
             currentIndex: _selectedIndex,
             onTap: _onItemTapped,
           ),
-          body: ListView.builder(
-              itemCount: movies.length,
-              itemBuilder: (context, index) {
+          body: Stack(
+            children: <Widget>[
+              ListView.builder(
+                  itemCount: movies.length,
+                  itemBuilder: (context, index) {
+                   print(contextt.toString());
+                    return GestureDetector(
+                      child: MovieCell(movies[index]),
+                      onTap: (){
+                        Navigator.of(contextt).pushNamed('/movies/movie-details');
+                      },
+                    );
+                  }),
 
-            return MovieCell(movies[index]);
-          })),
+              movies.length == 0
+                  ? Center(child: CircularProgressIndicator(),)
+                  : Text("")
+
+
+            ],
+          )),
     );
   }
 
@@ -117,81 +139,5 @@ class BottomNavScreen extends State<MovieApp> {
         fetchPopularMovies();
       else if (index == 1) fetchTopRatedMovies();
     });
-  }
-}
-
-
-class MovieCell extends StatelessWidget {
-  final MovieModel movie;
-
-  Color mainColor = const Color(0xff3C3261);
-  var image_url = 'https://image.tmdb.org/t/p/w500/';
-
-  MovieCell(this.movie);
-
-  @override
-  Widget build(BuildContext context) {
-    return new Column(
-      children: <Widget>[
-         Row(
-          children: <Widget>[
-            new Padding(
-              padding:  EdgeInsets.all(0.0),
-              child:  Container(
-                margin: const EdgeInsets.all(16.0),
-//                                child: new Image.network(image_url+movie.posterPath,width: 100.0,height: 100.0),
-                child: new Container(
-                  width: 70.0,
-                  height: 70.0,
-                ),
-                decoration: new BoxDecoration(
-                  borderRadius: new BorderRadius.circular(10.0),
-                  color: Colors.grey,
-                  image: new DecorationImage(
-                      image: new NetworkImage(image_url + movie.posterPath),
-                      fit: BoxFit.cover),
-                  boxShadow: [
-                    new BoxShadow(
-                        color: mainColor,
-                        blurRadius: 5.0,
-                        offset: new Offset(2.0, 5.0))
-                  ],
-                ),
-              ),
-            ),
-            new Expanded(
-                child:  Container(
-              margin:  EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-              child:  Column(
-                children: [
-                  new Text(
-                    movie.title,
-                    style: new TextStyle(
-                        fontSize: 20.0,
-                        fontFamily: 'Arvo',
-                        fontWeight: FontWeight.bold,
-                        color: mainColor),
-                  ),
-                  new Padding(padding: const EdgeInsets.all(2.0)),
-                  new Text(
-                    movie.overview,
-                    maxLines: 3,
-                    style: new TextStyle(
-                        color: const Color(0xff8785A4), fontFamily: 'Arvo'),
-                  )
-                ],
-                crossAxisAlignment: CrossAxisAlignment.start,
-              ),
-            )),
-          ],
-        ),
-         Container(
-          width: 300.0,
-          height: 0.5,
-          color: const Color(0xD2D2E1ff),
-          margin: const EdgeInsets.all(16.0),
-        )
-      ],
-    );
   }
 }
