@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -11,8 +12,14 @@ class SplashScreen extends StatefulWidget {
 }
 
 class SplashState extends State<SplashScreen> {
+
+
+
   @override
   void initState() {
+
+//login();
+
     Timer(Duration(milliseconds: 1000),(){
 
 //      Navigator.of(context).pushNamed('/movies');

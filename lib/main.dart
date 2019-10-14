@@ -9,7 +9,7 @@ import 'package:movie_app/registration/RegistrationApp.dart';
 import 'movies/MovieModel.dart';
 
 void main() {
-  runApp(RegistrationApp());
+  runApp(MyApp());
 }
 
 //class App extends StatefulWidget {

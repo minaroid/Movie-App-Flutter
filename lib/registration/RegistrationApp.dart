@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/movies/SplashScreen.dart';
+import 'package:movie_app/movies/MoviesListScreen.dart';
 import 'package:movie_app/registration/LoginScreen.dart';
 import 'package:movie_app/registration/RegisterScreen.dart';
 import 'package:movie_app/registration/RegistrationSplash.dart';
@@ -12,7 +12,7 @@ class RegistrationApp extends StatelessWidget {
       routes: {
         '/': (context) => RegistrationSplash(),
         '/login': (context) => LoginScreen(),
-        '/login/register': (context) => RegisterScreen(),
+        '/login/movies': (context) => MoviesListScreen(),
       },
     );
   }

@@ -12,6 +12,7 @@ class MovieModel {
   String title;
   String overview;
   String releaseDate;
+  bool isFavorite = false;
 
   MovieModel(
       {this.popularity,

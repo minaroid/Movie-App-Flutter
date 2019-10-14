@@ -66,6 +66,13 @@ class MovieCell extends StatelessWidget {
                 )),
           ],
         ),
+
+        GestureDetector(
+          child: Icon(movie.isFavorite?Icons.favorite:Icons.favorite_border),
+          onTap: (){
+            movie.isFavorite = !movie.isFavorite;
+          },
+        ),
         Container(
           width: 300.0,
           height: 0.5,
