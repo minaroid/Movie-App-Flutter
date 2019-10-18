@@ -3,7 +3,11 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:movie_app/SharedPrefernceTwo.dart';
 import 'package:movie_app/registration/LoginResponse.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../SharedPreferencesHelper.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -16,6 +20,7 @@ class LoginState extends State<LoginScreen> {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   BuildContext context;
+  SharedPreferences prefs;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +31,7 @@ class LoginState extends State<LoginScreen> {
         appBar: AppBar(
           title: Text("Login"),
         ),
-        body: Column(
+        body: ListView(
           children: <Widget>[
             Padding(
               padding: EdgeInsets.all(15),
@@ -105,11 +110,6 @@ class LoginState extends State<LoginScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
@@ -123,41 +123,28 @@ class LoginState extends State<LoginScreen> {
       "password": passwordController.text
     });
 
-    LoginResponse myResponse =
-        LoginResponse.fromJson(json.decode(response.data));
+    LoginResponse myResponse = LoginResponse.fromJson(json.decode(response.data));
+
     if (myResponse.message == "Login successfull") {
+
+      await SharedPrefernceTwo.setUser(myResponse.user);
+
       navigateToMovies();
-    }else{
+
+    } else {
       Fluttertoast.showToast(
-        msg: myResponse.message,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIos: 1,
-        backgroundColor: Colors.black,
-        textColor: Colors.white,
-        fontSize: 16.0);
+          msg: myResponse.message,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIos: 1,
+          backgroundColor: Colors.black,
+          textColor: Colors.white,
+          fontSize: 16.0);
     }
   }
 
   void navigateToMovies() {
     Navigator.of(context).pushNamed("/login/movies");
   }
-
-//  Future login() async {
-//    var response = await Dio().post("https://mina-george.com/demos/Api.php?apicall=login", data: {"email": emailController.text, "password": passwordController.text});
-//
-//    print("response Is :$response");
-//
-//        Fluttertoast.showToast(
-//        msg: "This is Center Short Toast",
-//        toastLength: Toast.LENGTH_SHORT,
-//        gravity: ToastGravity.BOTTOM,
-//        timeInSecForIos: 1,
-//        backgroundColor: Colors.black,
-//        textColor: Colors.white,
-//        fontSize: 16.0);
-//
-//  }
-
-//  https://api.flutter.dev/flutter/material/DropdownButton-class.html
 }
+

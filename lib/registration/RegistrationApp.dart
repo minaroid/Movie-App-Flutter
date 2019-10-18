@@ -12,6 +12,8 @@ class RegistrationApp extends StatelessWidget {
       routes: {
         '/': (context) => RegistrationSplash(),
         '/login': (context) => LoginScreen(),
+        '/movies': (context) => MoviesListScreen(),
+        '/login/register': (context) => RegisterScreen(),
         '/login/movies': (context) => MoviesListScreen(),
       },
     );
