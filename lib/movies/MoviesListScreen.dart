@@ -1,0 +1,256 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart';
+import 'package:movie_app/registration/LoginResponse.dart';
+import 'package:movie_app/registration/LoginScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../SharedPreferencesHelper.dart';
+import '../SharedPrefernceTwo.dart';
+import 'MovieModel.dart';
+
+class MoviesListScreen extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return MoviesState();
+  }
+}
+
+class MoviesState extends State<MoviesListScreen> {
+  int _selectedIndex = 0;
+  int counter = 1;
+  List<MovieModel> movies = List();
+  bool isGrid = false;
+  User _userModel;
+
+
+  void getUserData() async{
+    _userModel = await SharedPrefernceTwo.getUser();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchTopRatedMovies();
+    getUserData();
+  }
+
+  @override
+  Widget build(BuildContext contextt) {
+    return MaterialApp(
+        home: Scaffold(
+            appBar: AppBar(title: Text("Movie App")),
+            bottomNavigationBar: BottomNavigationBar(
+              items: <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.business),
+                  title: Text('Top Rated'),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.business),
+                  title: Text('popular '),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.account_circle),
+                  title: Text('Profile '),
+                ),
+              ],
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
+            ),
+            body: _selectedIndex == 2
+                ? Center(
+                    child: Text(_userModel == null ? "Name" : _userModel.phone),
+                  )
+                : Stack(
+                    children: <Widget>[
+                      ListView.builder(
+                          itemCount: movies.length,
+                          itemBuilder: (context, index) {
+                            print(contextt.toString());
+                            MovieModel movie = movies[index];
+                            Color mainColor = const Color(0xff3C3261);
+                            var image_url = 'https://image.tmdb.org/t/p/w500/';
+                            return GestureDetector(
+                              child: new Column(
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      new Padding(
+                                        padding: EdgeInsets.all(0.0),
+                                        child: Container(
+                                          margin: const EdgeInsets.all(16.0),
+                                          child: new Container(
+                                            width: 70.0,
+                                            height: 70.0,
+                                          ),
+                                          decoration: new BoxDecoration(
+                                            borderRadius:
+                                                new BorderRadius.circular(10.0),
+                                            color: Colors.grey,
+                                            image: new DecorationImage(
+                                                image: new NetworkImage(
+                                                    image_url +
+                                                        movie.posterPath),
+                                                fit: BoxFit.cover),
+                                            boxShadow: [
+                                              new BoxShadow(
+                                                  color: mainColor,
+                                                  blurRadius: 5.0,
+                                                  offset: new Offset(2.0, 5.0))
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      new Expanded(
+                                          child: Container(
+                                        margin: EdgeInsets.fromLTRB(
+                                            16.0, 0.0, 16.0, 0.0),
+                                        child: Column(
+                                          children: [
+                                            new Text(
+                                              movie.title,
+                                              style: new TextStyle(
+                                                  fontSize: 20.0,
+                                                  fontFamily: 'Arvo',
+                                                  fontWeight: FontWeight.bold,
+                                                  color: mainColor),
+                                            ),
+                                            new Padding(
+                                                padding:
+                                                    const EdgeInsets.all(2.0)),
+                                            new Text(
+                                              movie.overview,
+                                              maxLines: 3,
+                                              style: new TextStyle(
+                                                  color:
+                                                      const Color(0xff8785A4),
+                                                  fontFamily: 'Arvo'),
+                                            )
+                                          ],
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                        ),
+                                      )),
+                                    ],
+                                  ),
+                                  GestureDetector(
+                                    child: Icon(movie.isFavorite
+                                        ? Icons.favorite
+                                        : Icons.favorite_border),
+                                    onTap: () {
+                                      setState(() {
+                                        movie.isFavorite = !movie.isFavorite;
+                                      });
+                                    },
+                                  ),
+                                  Container(
+                                    width: 300.0,
+                                    height: 0.5,
+                                    color: const Color(0xD2D2E1ff),
+                                    margin: const EdgeInsets.all(16.0),
+                                  )
+                                ],
+                              ),
+                              onTap: () {
+                                Navigator.of(contextt)
+                                    .pushNamed('/movies/movie-details');
+                              },
+                            );
+                          }),
+                      movies.length == 0
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : Text("")
+                    ],
+                  )));
+  }
+
+  Future fetchPopularMovies() async {
+    var response = await get(
+        "https://api.themoviedb.org/3/movie/popular?api_key=c23c8f8855a040042f0433b7696f9d65&page=$counter");
+    setState(() {
+      movies
+          .addAll(MoviesResponse.fromJson(json.decode(response.body)).results);
+      counter += 1;
+    });
+    print(movies);
+  }
+
+  Future fetchTopRatedMovies() async {
+    var response = await get(
+        "https://api.themoviedb.org/3/movie/top_rated?api_key=c23c8f8855a040042f0433b7696f9d65&page=$counter");
+    setState(() {
+      movies
+          .addAll(MoviesResponse.fromJson(json.decode(response.body)).results);
+      counter += 1;
+    });
+    print(movies);
+  }
+
+  Widget movieItem(MovieModel model) {
+    return Container(
+      width: 100,
+      color: Colors.black12,
+      height: 180,
+      decoration: new BoxDecoration(
+        image: new DecorationImage(
+          image: new AssetImage("images/background.jpg"),
+          fit: BoxFit.cover,
+        ),
+      ),
+      margin: EdgeInsets.all(5),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Image.network(
+            "https://image.tmdb.org/t/p/w500" + model.posterPath,
+            fit: BoxFit.fill,
+            height: 140,
+            width: double.infinity,
+          ),
+          Padding(
+              child: Text(
+                model.title,
+                maxLines: 2,
+                style: TextStyle(color: Colors.blue),
+                textAlign: TextAlign.center,
+              ),
+              padding: EdgeInsets.only(top: 10, right: 5, left: 5)),
+        ],
+      ),
+    );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      print(index);
+      _selectedIndex = index;
+      counter = 1;
+      movies = List();
+      isGrid = true;
+
+      if (index == 0)
+        fetchPopularMovies();
+      else if (index == 1)
+        fetchTopRatedMovies();
+      else if (index == 2) fetchTopRatedMovies();
+    });
+  }
+
+  void getNumber() async {
+    var num = await SharedPreferencesHelper.getNumber();
+    Fluttertoast.showToast(
+        msg: num.toString(),
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.black,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
+
+}

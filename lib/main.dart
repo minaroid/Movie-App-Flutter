@@ -1,6 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:movie_app/registration/RegistrationApp.dart';
 
-import 'src/App.dart';
-
-void main() => runApp(App());
-
+void main() {
+  runApp(RegistrationApp());
+}
