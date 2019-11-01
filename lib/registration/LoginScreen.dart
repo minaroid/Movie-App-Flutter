@@ -122,6 +122,7 @@ class LoginState extends State<LoginScreen> {
 
   Future login() async {
     pr.show();
+
     var response = await Dio()
         .post("http://173.212.215.45:5040/PaymentService/api/v1/Login",
             options: Options(
@@ -138,6 +139,7 @@ class LoginState extends State<LoginScreen> {
           "UserName": "باسم",
           "Password": "715857851",
         });
+
     pr.hide();
 
     LoginResponse2 myResponse = LoginResponse2.fromJson(json.decode(json.encode(response.data)));
