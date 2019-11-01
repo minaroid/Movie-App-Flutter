@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'MovieModel.dart';
 
 class MovieCell extends StatelessWidget {
-  final MovieModel movie;
+
+   MovieModel movie;
 
   Color mainColor = const Color(0xff3C3261);
   var image_url = 'https://image.tmdb.org/t/p/w500/';

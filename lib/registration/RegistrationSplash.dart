@@ -4,8 +4,10 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../SharedPreferencesHelper.dart';
 import '../SharedPrefernceTwo.dart';
 import 'LoginResponse.dart';
+import 'LoginResponse2.dart';
 
 class RegistrationSplash extends StatefulWidget {
   @override
@@ -18,24 +20,20 @@ class RegistrationSplashState extends State<RegistrationSplash> {
   @override
   void initState() {
     Timer(Duration(milliseconds: 2000), () {
-      Navigator.of(context).pushReplacementNamed("/login");
-//      if (isUserLogin() as bool) {
-//        Navigator.of(context).pushReplacementNamed("/login");
-//      } else {
-//        Navigator.of(context).pushReplacementNamed("/movies");
-//      }
+      isLogin().then((value) {
+        if (value == null) {
+          Navigator.of(context).pushReplacementNamed("/login");
+        } else {
+          Navigator.of(context).pushReplacementNamed("/movies");
+        }
 
+      });
     });
     super.initState();
   }
 
-  Future<bool> isUserLogin() async {
-    User user = await SharedPrefernceTwo.getUser();
-
-    if (user == null)
-      return false;
-    else
-      return true;
+  Future<LoginResponse2> isLogin() async {
+    return await SharedPreferencesHelper.getResponse();
   }
 
   @override
@@ -49,3 +47,27 @@ class RegistrationSplashState extends State<RegistrationSplash> {
     );
   }
 }
+
+//void isLogin(){
+//
+//
+//}
+
+//bool isLogin(){
+//
+//  return true;
+//}
+//
+//if(isLogin()){
+//
+//}
+//
+//Future<bool> isLogin2(){
+//
+//  return true;
+//}
+//
+//isLogin2().then((value){
+//
+//
+//})

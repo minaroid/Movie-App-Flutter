@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:movie_app/registration/LoginResponse.dart';
+import 'package:movie_app/registration/LoginResponse2.dart';
 import 'package:movie_app/registration/LoginScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../SharedPreferencesHelper.dart';
@@ -23,11 +24,10 @@ class MoviesState extends State<MoviesListScreen> {
   int counter = 1;
   List<MovieModel> movies = List();
   bool isGrid = false;
-  User _userModel;
+  LoginResponse2 response2 = null;
 
-
-  void getUserData() async{
-    _userModel = await SharedPrefernceTwo.getUser();
+  void getUserData() async {
+    response2 = await SharedPreferencesHelper.getResponse();
   }
 
   @override
@@ -62,8 +62,28 @@ class MoviesState extends State<MoviesListScreen> {
             ),
             body: _selectedIndex == 2
                 ? Center(
-                    child: Text(_userModel == null ? "Name" : _userModel.phone),
-                  )
+                    child: Column(
+                    children: <Widget>[
+                      Text(response2 == null
+                          ? "Name"
+                          : " Welcom ${response2.user.name}"),
+                      RaisedButton(
+                        child: Text(
+                          "Log out",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(20.0),
+                            side: BorderSide(color: Colors.blue)),
+
+                        onPressed: logout,
+                        color: Colors.blue,
+                        textColor: Colors.white,
+                        padding: EdgeInsets.all(15),
+                        splashColor: Colors.grey,
+                      )
+                    ],
+                  ))
                 : Stack(
                     children: <Widget>[
                       ListView.builder(
@@ -241,16 +261,17 @@ class MoviesState extends State<MoviesListScreen> {
     });
   }
 
-  void getNumber() async {
-    var num = await SharedPreferencesHelper.getNumber();
-    Fluttertoast.showToast(
-        msg: num.toString(),
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIos: 1,
-        backgroundColor: Colors.black,
-        textColor: Colors.white,
-        fontSize: 16.0);
+  void logout() async {
+//    await SharedPreferencesHelper.logOut().then((value) {
+//      if(value){
+//        Navigator.of(context).pushReplacementNamed("/login");
+//      }
+//    });
   }
 
+//  void logout() async {
+//    await SharedPreferencesHelper.logOut().then((value) {
+//      if (value) Navigator.of(context).pushReplacementNamed("/login");
+//    });
+//  }
 }
