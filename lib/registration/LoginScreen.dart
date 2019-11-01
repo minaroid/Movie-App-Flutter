@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
@@ -5,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:movie_app/SharedPrefernceTwo.dart';
 import 'package:movie_app/registration/LoginResponse.dart';
+import 'package:movie_app/registration/LoginResponse2.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../SharedPreferencesHelper.dart';
@@ -21,9 +24,11 @@ class LoginState extends State<LoginScreen> {
   var passwordController = TextEditingController();
   BuildContext context;
   SharedPreferences prefs;
+  ProgressDialog pr;
 
   @override
   Widget build(BuildContext context) {
+    pr = new ProgressDialog(context);
     this.context = context;
     // TODO: implement build
     return MaterialApp(
@@ -44,7 +49,6 @@ class LoginState extends State<LoginScreen> {
             Padding(
               padding: EdgeInsets.all(10.0),
               child: TextField(
-                keyboardType: TextInputType.emailAddress,
                 controller: emailController,
                 decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
@@ -117,23 +121,45 @@ class LoginState extends State<LoginScreen> {
   }
 
   Future login() async {
+    pr.show();
+
     var response = await Dio()
-        .post("https://mina-george.com/demos/Api.php?apicall=login", data: {
-      "email": emailController.text,
-      "password": passwordController.text
-    });
+        .post("http://173.212.215.45:5040/PaymentService/api/v1/Login",
+            options: Options(
+              headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+              },
+            ),
+            data: {
+          "Channel": "3",
+          "ApiKey": "SfSowleejxCY7v+LkbsISUB+UilvCXXu0y/dzQ1SZvQ=",
+          "PublicKey":
+              "zWnf+AEHeDjoMx6oHeQvcMJbZT3zAbSI04f7lYWNn4AwqQ3RJaDD4j3xvFURNXb2NRXgMhj7pSr1XXp3w1YftNedfYhDSPhbiyAReNqBzj+r975g631RvPL7hvUpduI/d4qYjdtwaA4Dkjw46vJlLfILJoB+b7kt76Kri/3o3K8=",
+          "UserName": "باسم",
+          "Password": "715857851",
+        });
 
-    LoginResponse myResponse = LoginResponse.fromJson(json.decode(response.data));
+    pr.hide();
 
-    if (myResponse.message == "Login successfull") {
+    LoginResponse2 myResponse = LoginResponse2.fromJson(json.decode(json.encode(response.data)));
 
-      await SharedPrefernceTwo.setUser(myResponse.user);
+    if (myResponse.success) {
+//      Fluttertoast.showToast(
+//          msg: "Welcome ${myResponse.user.name}",
+//          toastLength: Toast.LENGTH_SHORT,
+//          gravity: ToastGravity.BOTTOM,
+//          timeInSecForIos: 1,
+//          backgroundColor: Colors.black,
+//          textColor: Colors.white,
+//          fontSize: 16.0);
+
+      await SharedPreferencesHelper.setResponse(myResponse);
 
       navigateToMovies();
-
     } else {
       Fluttertoast.showToast(
-          msg: myResponse.message,
+          msg: myResponse.errorMessage,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIos: 1,
@@ -144,7 +170,6 @@ class LoginState extends State<LoginScreen> {
   }
 
   void navigateToMovies() {
-    Navigator.of(context).pushNamed("/login/movies");
+    Navigator.of(context).pushReplacementNamed("/login/movies");
   }
 }
-
