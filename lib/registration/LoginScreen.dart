@@ -121,52 +121,56 @@ class LoginState extends State<LoginScreen> {
   }
 
   Future login() async {
-    pr.show();
 
-    var response = await Dio()
-        .post("http://173.212.215.45:5040/PaymentService/api/v1/Login",
-            options: Options(
-              headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-              },
-            ),
-            data: {
-          "Channel": "3",
-          "ApiKey": "SfSowleejxCY7v+LkbsISUB+UilvCXXu0y/dzQ1SZvQ=",
-          "PublicKey":
-              "zWnf+AEHeDjoMx6oHeQvcMJbZT3zAbSI04f7lYWNn4AwqQ3RJaDD4j3xvFURNXb2NRXgMhj7pSr1XXp3w1YftNedfYhDSPhbiyAReNqBzj+r975g631RvPL7hvUpduI/d4qYjdtwaA4Dkjw46vJlLfILJoB+b7kt76Kri/3o3K8=",
-          "UserName": "باسم",
-          "Password": "715857851",
-        });
+    RegExp regExp = new RegExp('^(?:[+11]9)?[0-9]{10}', caseSensitive: false, multiLine: false,);
+    print("allMatches : "+regExp.hasMatch(emailController.text).toString());
 
-    pr.hide();
-
-    LoginResponse2 myResponse = LoginResponse2.fromJson(json.decode(json.encode(response.data)));
-
-    if (myResponse.success) {
+//    pr.show();
+//
+//    var response = await Dio()
+//        .post("http://173.212.215.45:5040/PaymentService/api/v1/Login",
+//            options: Options(
+//              headers: {
+//                "Content-Type": "application/json",
+//                "Accept": "application/json",
+//              },
+//            ),
+//            data: {
+//          "Channel": "3",
+//          "ApiKey": "SfSowleejxCY7v+LkbsISUB+UilvCXXu0y/dzQ1SZvQ=",
+//          "PublicKey":
+//              "zWnf+AEHeDjoMx6oHeQvcMJbZT3zAbSI04f7lYWNn4AwqQ3RJaDD4j3xvFURNXb2NRXgMhj7pSr1XXp3w1YftNedfYhDSPhbiyAReNqBzj+r975g631RvPL7hvUpduI/d4qYjdtwaA4Dkjw46vJlLfILJoB+b7kt76Kri/3o3K8=",
+//          "UserName": "باسم",
+//          "Password": "715857851",
+//        });
+//
+//    pr.hide();
+//
+//    LoginResponse2 myResponse = LoginResponse2.fromJson(json.decode(json.encode(response.data)));
+//
+//    if (myResponse.success) {
+////      Fluttertoast.showToast(
+////          msg: "Welcome ${myResponse.user.name}",
+////          toastLength: Toast.LENGTH_SHORT,
+////          gravity: ToastGravity.BOTTOM,
+////          timeInSecForIos: 1,
+////          backgroundColor: Colors.black,
+////          textColor: Colors.white,
+////          fontSize: 16.0);
+//
+//      await SharedPreferencesHelper.setResponse(myResponse);
+//
+//      navigateToMovies();
+//    } else {
 //      Fluttertoast.showToast(
-//          msg: "Welcome ${myResponse.user.name}",
+//          msg: myResponse.errorMessage,
 //          toastLength: Toast.LENGTH_SHORT,
 //          gravity: ToastGravity.BOTTOM,
 //          timeInSecForIos: 1,
 //          backgroundColor: Colors.black,
 //          textColor: Colors.white,
 //          fontSize: 16.0);
-
-      await SharedPreferencesHelper.setResponse(myResponse);
-
-      navigateToMovies();
-    } else {
-      Fluttertoast.showToast(
-          msg: myResponse.errorMessage,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIos: 1,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 16.0);
-    }
+//    }
   }
 
   void navigateToMovies() {
